@@ -440,3 +440,69 @@ class DraughtPlot():
         Displays a .gif demonstrating how to use the tool.
         """
         return Image(filename=fpath)
+
+
+class HistView():
+    """
+    Histogram viewer which plots histograms of a feature, the feature displayed
+    can be controlled by using a slider. Currently all features values must be bounded between 0 and 1.
+
+    Attributes:
+        X (pd.DataFrame): (n x m) dataframe with n instances and m      
+                          features.
+        y (np.ndarray): 1D array of target values for each of the 
+                            n instances in X.
+    """
+
+    def __init__(self, X, y=None, url='localhost:8888'):
+        """
+        Constructer for the HistView class.
+
+        Parameters:
+        X (pd.DataFrame): (n x m) dataframe with n instances and m      
+                          features.
+        y (np.ndarray): 1D array of target values for each of the 
+                            n instances in X. Defaults to None.
+        url (str): url of notebook for output.
+        """
+        self.X, self.y = X, y
+        self._are_features_bounded(X)
+
+    def _make_bokeh_doc(self):
+        """
+        Main method which controls the construction of the document.
+        """
+        print('In progress')
+
+    def _are_features_bounded(self, X):
+        """
+        Checks if all the features bounded between 0 and 1 and if not raises an 
+        exception suggesting the use of StandardScaler.
+
+        Parameters:
+            X (pd.DataFrame): (n x m) dataframe with n instances and m      
+                          features.
+        """
+        max_feature_value = X.max(axis=0).values
+        min_feature_value = X.min(axis=0).values
+        features_bounded = all((min_feature_value>-1e-6) &
+                               (max_feature_value<1.00001))
+        if not features_bounded:
+            raise Exception('Features must be bounded between 0 and 1!'
+                            'Try using StandardScaler from sklearn to prepare'
+                            'your features for HistView.')
+
+    def _make_figure(self):
+        """
+        Initiaties the empty figure
+        """ 
+    def _make_slider(self):
+        """
+        """
+        self.slider = Slider(start=0, end=self.X.shape[1])
+
+    def _slider_callback(self):
+        """
+        Callback for the slider widget which selects which feature to plot a histogram of. Code will be ran when the value of the slider changes.
+        """
+        #counts, bins = np.histogram(x, bins=bin_count)
