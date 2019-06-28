@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/W32TeX) (preloaded format=pdflatex 2019.3.12)  27 JUN 2019 12:23
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018/W32TeX) (preloaded format=pdflatex 2019.3.12)  28 JUN 2019 10:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -350,133 +350,154 @@ LaTeX Warning: No \author given.
 <images/UVFS_tool_annotated.png, id=1, 477.28313pt x 352.81813pt>
 File: images/UVFS_tool_annotated.png Graphic file (type png)
 <use images/UVFS_tool_annotated.png>
-Package pdftex.def Info: images/UVFS_tool_annotated.png  used on input line 73.
+Package pdftex.def Info: images/UVFS_tool_annotated.png  used on input line 76.
 
 (pdftex.def)             Requested size: 325.215pt x 240.40305pt.
-<images/HDViz_tool_annotated.png, id=2, 451.6875pt x 393.72093pt>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<images/UVFS_get_features.png, id=2, 803.50188pt x 52.69687pt>
+File: images/UVFS_get_features.png Graphic file (type png)
+<use images/UVFS_get_features.png>
+Package pdftex.def Info: images/UVFS_get_features.png  used on input line 83.
+(pdftex.def)             Requested size: 415.55249pt x 27.25456pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<images/HDViz_tool_annotated.png, id=3, 451.6875pt x 393.72093pt>
 File: images/HDViz_tool_annotated.png Graphic file (type png)
 <use images/HDViz_tool_annotated.png>
-Package pdftex.def Info: images/HDViz_tool_annotated.png  used on input line 84
+Package pdftex.def Info: images/HDViz_tool_annotated.png  used on input line 94
 .
 (pdftex.def)             Requested size: 325.215pt x 283.49687pt.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 85.
+(Font)              <10.95> on input line 95.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <9> on input line 85.
+(Font)              <9> on input line 95.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 85.
-[1
+(Font)              <5> on input line 95.
 
-{c:/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./images/UVFS_t
-ool_annotated.png>]
-<images/bokeh_tools_move.png, id=13, 35.63312pt x 36.63687pt>
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<images/bokeh_tools_move.png, id=5, 35.63312pt x 36.63687pt>
 File: images/bokeh_tools_move.png Graphic file (type png)
 <use images/bokeh_tools_move.png>
-Package pdftex.def Info: images/bokeh_tools_move.png  used on input line 101.
+Package pdftex.def Info: images/bokeh_tools_move.png  used on input line 111.
 (pdftex.def)             Requested size: 25.29494pt x 26.00731pt.
-<images/bokeh_tools_lassoo.png, id=14, 35.63312pt x 29.61063pt>
+<images/bokeh_tools_lassoo.png, id=6, 35.63312pt x 29.61063pt>
 File: images/bokeh_tools_lassoo.png Graphic file (type png)
 <use images/bokeh_tools_lassoo.png>
-Package pdftex.def Info: images/bokeh_tools_lassoo.png  used on input line 102.
+Package pdftex.def Info: images/bokeh_tools_lassoo.png  used on input line 112.
 
 (pdftex.def)             Requested size: 25.29494pt x 21.0196pt.
-<images/bokeh_tools_boxzoom.png, id=15, 36.63687pt x 36.135pt>
+<images/bokeh_tools_boxzoom.png, id=7, 36.63687pt x 36.135pt>
 File: images/bokeh_tools_boxzoom.png Graphic file (type png)
 <use images/bokeh_tools_boxzoom.png>
-Package pdftex.def Info: images/bokeh_tools_boxzoom.png  used on input line 103
+Package pdftex.def Info: images/bokeh_tools_boxzoom.png  used on input line 113
 .
 (pdftex.def)             Requested size: 25.29494pt x 24.94804pt.
-<images/bokeh_tools_boxselect.png, id=16, 36.135pt x 35.13126pt>
+<images/bokeh_tools_boxselect.png, id=8, 36.135pt x 35.13126pt>
 File: images/bokeh_tools_boxselect.png Graphic file (type png)
 <use images/bokeh_tools_boxselect.png>
 Package pdftex.def Info: images/bokeh_tools_boxselect.png  used on input line 1
-04.
+14.
 (pdftex.def)             Requested size: 25.29494pt x 24.59222pt.
-<images/bokeh_tools_reset.png, id=17, 34.62938pt x 35.63312pt>
+<images/bokeh_tools_reset.png, id=9, 34.62938pt x 35.63312pt>
 File: images/bokeh_tools_reset.png Graphic file (type png)
 <use images/bokeh_tools_reset.png>
-Package pdftex.def Info: images/bokeh_tools_reset.png  used on input line 105.
+Package pdftex.def Info: images/bokeh_tools_reset.png  used on input line 115.
 (pdftex.def)             Requested size: 25.29494pt x 26.02824pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[1
+
+{c:/texlive/2018/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+<images/HDViz_intialisation.png, id=20, 786.43813pt x 41.15375pt>
+File: images/HDViz_intialisation.png Graphic file (type png)
+<use images/HDViz_intialisation.png>
+Package pdftex.def Info: images/HDViz_intialisation.png  used on input line 127
+.
+(pdftex.def)             Requested size: 415.55249pt x 21.74606pt.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[2 <./images/HDViz_tool_annotated.png>]
-<images/HDViz_intialisation.png, id=25, 786.43813pt x 41.15375pt>
-File: images/HDViz_intialisation.png Graphic file (type png)
-<use images/HDViz_intialisation.png>
-Package pdftex.def Info: images/HDViz_intialisation.png  used on input line 117
-.
-(pdftex.def)             Requested size: 415.55249pt x 21.74606pt.
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 127.
+[2 <./images/UVFS_tool_annotated.png> <./images/UVFS_get_features.png>]
+
+LaTeX Warning: Text page 3 contains only floats.
+
+
+Overfull \vbox (0.76228pt too high) has occurred while \output is active []
+
+
+[3 <./images/HDViz_tool_annotated.png> <./images/bokeh_tools_move.png> <./image
+s/bokeh_tools_lassoo.png> <./images/bokeh_tools_boxzoom.png> <./images/bokeh_to
+ols_boxselect.png> <./images/bokeh_tools_reset.png>]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 137.
 
 
 (c:/texlive/2018/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 127.
- [3 <./images/bokeh_tools_move.png> <./images/bokeh_tools_lassoo.png> <./images
-/bokeh_tools_boxzoom.png> <./images/bokeh_tools_boxselect.png> <./images/bokeh_
-tools_reset.png> <./images/HDViz_intialisation.png>]
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 137.
 <images/get_brushed_data_command.png, id=31, 762.85pt x 41.65562pt>
 File: images/get_brushed_data_command.png Graphic file (type png)
 <use images/get_brushed_data_command.png>
 Package pdftex.def Info: images/get_brushed_data_command.png  used on input lin
-e 142.
+e 152.
 (pdftex.def)             Requested size: 415.55249pt x 22.69136pt.
 <images/draughtplot.png, id=32, 565.11125pt x 407.02063pt>
 File: images/draughtplot.png Graphic file (type png)
 <use images/draughtplot.png>
-Package pdftex.def Info: images/draughtplot.png  used on input line 154.
+Package pdftex.def Info: images/draughtplot.png  used on input line 164.
 (pdftex.def)             Requested size: 415.55249pt x 299.30872pt.
-<images/DP_start.png, id=33, 824.58063pt x 32.12pt>
+ [4 <./images/HDViz_intialisation.png>]
+<images/DP_start.png, id=37, 824.58063pt x 32.12pt>
 File: images/DP_start.png Graphic file (type png)
 <use images/DP_start.png>
-Package pdftex.def Info: images/DP_start.png  used on input line 166.
+Package pdftex.def Info: images/DP_start.png  used on input line 176.
 (pdftex.def)             Requested size: 415.55249pt x 16.18689pt.
- [4 <./images/get_brushed_data_command.png>] [5 <./images/draughtplot.png> <./i
+ [5 <./images/get_brushed_data_command.png>] [6 <./images/draughtplot.png> <./i
 mages/DP_start.png>]
-Overfull \hbox (95.22977pt too wide) in paragraph at lines 202--203
+Overfull \hbox (95.22977pt too wide) in paragraph at lines 212--213
 []\OT1/cmr/m/n/10.95 Wattenberg, et al., "How to Use t-SNE Ef-fec-tively", Dis-
 till, 2016. http://doi.org/10.23915/distill.00002 
  []
 
-[6
+[7
 
 ]
-Overfull \hbox (2.64256pt too wide) in paragraph at lines 220--221
+Overfull \hbox (2.64256pt too wide) in paragraph at lines 230--231
 \OT1/cmr/m/n/10.95 Jour-nal of Open Source Soft-ware, 3(29), 861. <https://doi.
 org/10.21105/joss.00861> 
  []
 
-[7] (./mlviz_howtoguide.aux)
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+[8] (./mlviz_howtoguide.aux) ) 
 Here is how much of TeX's memory you used:
- 4115 strings out of 492616
- 64050 string characters out of 6132768
- 140652 words of memory out of 5000000
- 7962 multiletter control sequences out of 15000+600000
+ 4121 strings out of 492616
+ 64221 string characters out of 6132768
+ 143660 words of memory out of 5000000
+ 7967 multiletter control sequences out of 15000+600000
  11870 words of font info for 41 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  41i,13n,43p,851b,391s stack positions out of 5000i,500n,10000p,200000b,80000s
-<c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/tex
-live/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2018
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2018/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texlive/2018/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmr6.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmr8.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmr9.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb
-><c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb><c:/texl
-ive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2018/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on mlviz_howtoguide.pdf (7 pages, 412112 bytes).
+<c:/texlive/2018/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmbx10.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmmi10.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pf
+b><c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><c:/texl
+ive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb><c:/texlive/2018/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2018/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmr9.pfb><c:/texlive/2018/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmss10.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmss12.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmsy10.pfb><c:/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pf
+b>
+Output written on mlviz_howtoguide.pdf (8 pages, 423840 bytes).
 PDF statistics:
- 85 PDF objects out of 1000 (max. 8388607)
- 52 compressed objects within 1 object stream
+ 89 PDF objects out of 1000 (max. 8388607)
+ 54 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 56 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 61 words of extra memory for PDF output out of 10000 (max. 10000000)
 

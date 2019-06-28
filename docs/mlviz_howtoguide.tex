@@ -61,17 +61,28 @@
 \begin{document}
 \maketitle
 
-% introduction to the package and that it is a wrapper around bokeh + sci-kit learn.
+MLViz is a suite of interactive visualisation tools to assist the exploratory analysis of high-dimensional datasets. It is based on the Bokeh and sci-kit learn libraries and is developed to integrate directly with Jupyter notebooks so it can be used in with exisiting exploratory analysis workflows. 
+
+This document introduces the tools (as of V0.1) and has some hints on how to use the tools.
 
 \section{The Univariate feature selection tool}
 
 The feature selection tool computes univariate statistical tests of each feature and allows the user to select a feature subset based on these tests. When there are a large number of features it is often unfeasible to use all the features to build a machine learning model or perform exploratory analysis of and this tool can help the users prioritise the features to investigate further with the other tools in the MLviz library. 
 
+A list of the most important features (as determined by the univariate statistical tests) can be extracted as a list (see fig. \ref{fig:UVFS_features}) so they can be directly fed into different tools in the MLViz library.
+
 \begin{figure}[!h]
 \centering
 \includegraphics[width=4.5in]{images/UVFS_tool_annotated.png}
-\caption{\textbf{Overview of the UVFS tool.} }
+\caption{\textbf{Overview of the UVFS tool.} The horizontal axis displays each feature and the vertical axis the calculated statistical test of that feature (F-value or mutual information, shown by the highlighted tab in the top left corner). The user has the ability to select (dark shading) or de-select (light shading) using the Bokeh 'Tap tool' (Top right tool bar). A user can also threshold the features by selecting the 'minimum' value of the statistical test (using the slider, top left) to de-select features of potential low-importance.}
 \label{fig:UVFS}
+\end{figure}
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=5.75in]{images/UVFS_get_features.png}
+\caption{\textbf{Extracting selected features from the UVFS tool.} This method can be used to extract the names of the features selected inthe UVFS tool (i.e., any features which are shaded in dark blue in fig. \ref{fig:UVFS}).}
+\label{fig:UVFS_features}
 \end{figure}
 
 \section{The HDViz tool}
