@@ -445,7 +445,8 @@ class DraughtPlot():
 class HistView():
     """
     Histogram viewer which plots histograms of a feature, the feature displayed
-    can be controlled by using a slider. Currently all features values must be bounded between 0 and 1.
+    can be controlled by using a slider. Currently all features values must be 
+    bounded between 0 and 1.
 
     Attributes:
         X (pd.DataFrame): (n x m) dataframe with n instances and m      
@@ -465,18 +466,26 @@ class HistView():
                             n instances in X. Defaults to None.
         url (str): url of notebook for output.
         """
+        # Need to add checks to only plot a fraction of the data if it is large.
         self.X, self.y = X, y
         self._are_features_bounded(X)
+        app = Application(FunctionHandler(self._make_bokeh_doc)) # make document
+        show(app, notebook_url=url) # show document in notebook
 
-    def _make_bokeh_doc(self):
+    def _make_bokeh_doc(self, doc):
         """
         Main method which controls the construction of the document.
         """
-        print('In progress')
+        self._init_figure()
+        self._init_slider()
+        self._init_histogram()
+
+        doc_layout = Row([self.slider, self.figure])
+        doc.add_root(doc_layout)
 
     def _are_features_bounded(self, X):
         """
-        Checks if all the features bounded between 0 and 1 and if not raises an 
+        Checks if features are bounded between 0 and 1 and if not raises an 
         exception suggesting the use of StandardScaler.
 
         Parameters:
@@ -492,17 +501,32 @@ class HistView():
                             'Try using StandardScaler from sklearn to prepare'
                             'your features for HistView.')
 
-    def _make_figure(self):
+    def _init_figure(self):
         """
-        Initiaties the empty figure
+        Initiaties the empty figure.
         """ 
-    def _make_slider(self):
+        self.figure = figure(x_axis_label='Value',
+                             y_axis_label='Count')
+    
+
+    def _init_slider(self):
         """
+        Inititiates the feature selection slider.
         """
         self.slider = Slider(start=0, end=self.X.shape[1])
+        self.slider.callback = self._slider_callback
 
     def _slider_callback(self):
         """
         Callback for the slider widget which selects which feature to plot a histogram of. Code will be ran when the value of the slider changes.
         """
         #counts, bins = np.histogram(x, bins=bin_count)
+
+        # get the slider value
+
+        # update the histogram with the new feature values
+
+    def _init_histogram(self):
+        """
+        Plots the initial histogram of the first feature.
+        """
