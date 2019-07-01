@@ -441,7 +441,6 @@ class DraughtPlot():
         """
         return Image(filename=fpath)
 
-
 class HistView():
     """
     Histogram viewer which plots histograms of a feature, the feature displayed
@@ -455,7 +454,7 @@ class HistView():
                             n instances in X.
     """
 
-    def __init__(self, X, y=None, url='localhost:8888'):
+    def __init__(self, X, y=None, url='localhost:8888', bin_count=20):
         """
         Constructer for the HistView class.
 
@@ -465,9 +464,11 @@ class HistView():
         y (np.ndarray): 1D array of target values for each of the 
                             n instances in X. Defaults to None.
         url (str): url of notebook for output.
+        bin_count (int): number of bins to seperate the histogram into.
         """
         # Need to add checks to only plot a fraction of the data if it is large.
         self.X, self.y = X, y
+        self.bin_edges = np.linspace(0, 1, bin_count+1)
         self._are_features_bounded(X)
         app = Application(FunctionHandler(self._make_bokeh_doc)) # make document
         show(app, notebook_url=url) # show document in notebook
@@ -508,25 +509,64 @@ class HistView():
         self.figure = figure(x_axis_label='Value',
                              y_axis_label='Count')
     
-
     def _init_slider(self):
         """
         Inititiates the feature selection slider.
         """
-        self.slider = Slider(start=0, end=self.X.shape[1])
+        self.slider = Slider(start=0, end=self.X.shape[1], step=1)
         self.slider.callback = self._slider_callback
 
     def _slider_callback(self):
         """
         Callback for the slider widget which selects which feature to plot a histogram of. Code will be ran when the value of the slider changes.
         """
-        #counts, bins = np.histogram(x, bins=bin_count)
+        idx = self.slider.value
+        feature_values = self.X.iloc[:, idx].values
+        # update the histogram
+        self._update_histogram(feature_values)
 
-        # get the slider value
+    def _get_histogram_values(self, values):
+        """
+        Values (np.ndarray): values of the feature.
 
-        # update the histogram with the new feature values
+        Returns:
+            count_arr: the counts for each value of target in each bin.
+        """
+        target_values = np.unique(self.y)
+        # init empty array to store counts of each target [n_bins, n_targets]
+        count_arr = np.zeros((len(self.bin_edges)-1, len(target_values)))
+        for idx, target in enumerate(target_values):
+            masked_values = values[self.y==target]
+            counts, _ = np.histogram(masked_values, bins=self.bin_edges)
+            count_arr[:, idx] = counts
+        return count_arr
+
+    def _update_histogram(self, values):
+        """
+        Function which updates histogram after the slider has changed.
+        """
+        count_arr = self._get_histogram_values(values)
+        hist_bottoms = np.zeros(count_arr.shape[0]) 
+        for i, hist in enumerate(self.hists):
+            hist.bottom = hist_bottoms
+            hist.top = hist_bottoms+count_arr[i]
+            hist_bottoms = hist_bottoms + count_arr[i]
 
     def _init_histogram(self):
         """
         Plots the initial histogram of the first feature.
-        """
+        """       
+        
+        left_edges = self.bin_edges[:-1]
+        right_edges = self.bin_edges[1:]
+        feature_values = self.X.iloc[:, 0].values
+        count_arr = self._get_histogram_values(feature_values)
+        hist_bottoms = np.zeros(count_arr.shape[0])
+        self.hists = []
+        for i in range(count_arr.shape[1]):
+            hist = self.figure.quad(bottom=hist_bottoms,
+                                    left=left_edges,
+                                    right=right_edges,
+                                    top=count_arr[i]+hist_bottoms)
+            hist_bottoms = hist_bottoms + count_arr[i]
+            self.hists.append(hist)
