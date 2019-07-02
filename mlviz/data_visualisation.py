@@ -478,7 +478,10 @@ class HistView():
 
     def _make_bokeh_doc(self, doc):
         """
-        Main method which controls the construction of the document.
+        Main method controlling the construction of the bokeh document.
+
+        Parameters:
+            doc : bokeh Document instance to contain all required Bokeh models.
         """
         self._init_figure()
         self._init_slider()
@@ -489,8 +492,8 @@ class HistView():
 
     def _are_features_bounded(self, X):
         """
-        Checks if features are bounded between 0 and 1 and if not raises an 
-        exception suggesting the use of StandardScaler.
+        Checks features are bounded between 0 and 1 and if not raises an 
+        exception suggesting the use of MinMaxScaler.
 
         Parameters:
             X (pd.DataFrame): (n x m) dataframe with n instances and m      
@@ -502,7 +505,7 @@ class HistView():
                                (max_feature_value<1.00001))
         if not features_bounded:
             raise Exception('Features must be bounded between 0 and 1!'
-                            'Try using StandardScaler from sklearn to prepare'
+                            'Try using MinMaxScaler from sklearn to prepare'
                             'your features for HistView.')
 
     def _init_figure(self, fig_props={'plot_height':500, 
@@ -514,6 +517,9 @@ class HistView():
                                                'save')}):
         """
         Initiaties the empty figure.
+
+        Parameters:
+            fig_props: dictionary of kwargs to be passed to figure object.
         """ 
         self.figure = figure(x_axis_label='Value',
                              y_axis_label='Count',
@@ -534,7 +540,12 @@ class HistView():
 
     def _slider_callback(self, attr, old, new):
         """
-        Callback for the slider widget which selects which feature to plot a histogram of. Code will be ran when the value of the slider changes.
+        Callback for the feature selection slider. Code will be ran when the value of the slider changes.
+        
+        Parameters:
+            attr : attribute of slider to monitor
+            old : old value of attr
+            new : new value of attr
         """
         idx = int(new)
         feature_values = self.X.iloc[:, idx].values
@@ -543,7 +554,11 @@ class HistView():
 
     def _get_histogram_values(self, values):
         """
-        Values (np.ndarray): values of the feature.
+        Given an array of values generates a histogram for each value of target.
+        These are then stacked in columns.
+
+        Parameters:
+            values : array-like object of values to bin.
 
         Returns:
             count_arr: the counts for each value of target in each bin.
@@ -560,6 +575,9 @@ class HistView():
     def _update_histogram(self, values):
         """
         Function which updates histogram after the slider has changed.
+
+        Parameters:
+            values : array-like object of values to bin.
         """
         count_arr = self._get_histogram_values(values)
         hist_bottoms = np.zeros(count_arr.shape[0]) 
@@ -570,20 +588,22 @@ class HistView():
 
     def _init_histogram(self):
         """
-        Plots the initial histogram of the first feature.
+        Plots the initial histogram, uses the 0th feature.
         """       
-        left_edges = self.bin_edges[:-1]
-        right_edges = self.bin_edges[1:]
         feature_values = self.X.iloc[:,0].values
         count_arr = self._get_histogram_values(feature_values)
-        hist_bottoms = np.zeros(count_arr.shape[0])
-        self.hists = []
         possible_targets = np.unique(self.y)
         num_targets = len(possible_targets)
         try:
             colours = Category20[num_targets]
         except KeyError:
+            # if there are two features, use three feature cs
             colours = Category20[num_targets+1]
+        
+        left_edges = self.bin_edges[:-1]
+        right_edges = self.bin_edges[1:]
+        hist_bottoms = np.zeros(count_arr.shape[0])
+        self.hists = []
         for i in range(num_targets):
             hist = self.figure.quad(bottom=hist_bottoms,
                                     left=left_edges,
