@@ -509,8 +509,6 @@ class HistView():
                                       'plot_width':500, 
                                       'tools':('box_zoom,'
                                                'wheel_zoom,'
-                                               'box_select,'
-                                               'lasso_select,'
                                                'reset,'
                                                'help,'
                                                'save')}):
@@ -542,7 +540,7 @@ class HistView():
         feature_values = self.X.iloc[:, idx].values
         self._update_histogram(feature_values)
         self.slider.title = self.X.columns[idx]
-        
+
     def _get_histogram_values(self, values):
         """
         Values (np.ndarray): values of the feature.
