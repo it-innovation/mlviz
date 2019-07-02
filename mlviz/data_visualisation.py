@@ -23,7 +23,7 @@ from bokeh.application import Application
 
 # things for controlling colour
 from bokeh.transform import linear_cmap
-from bokeh.palettes import Viridis256, Category20
+from bokeh.palettes import Viridis256, Category20, inferno
 from bokeh.models import ColorBar, BasicTicker
 
 # dimensionality reduction algorithms
@@ -454,7 +454,7 @@ class HistView():
                             n instances in X.
     """
 
-    def __init__(self, X, y=None, url='localhost:8888', bin_count=20):
+    def __init__(self, X, y=None, url='localhost:8888', bin_count=50):
         """
         Constructer for the HistView class.
 
@@ -481,7 +481,7 @@ class HistView():
         self._init_slider()
         self._init_histogram()
 
-        doc_layout = Row([self.slider, self.figure])
+        doc_layout = layout([self.slider, self.figure])
         doc.add_root(doc_layout)
 
     def _are_features_bounded(self, X):
@@ -502,29 +502,43 @@ class HistView():
                             'Try using StandardScaler from sklearn to prepare'
                             'your features for HistView.')
 
-    def _init_figure(self):
+    def _init_figure(self, fig_props={'plot_height':500, 
+                                      'plot_width':500, 
+                                      'tools':('box_zoom,'
+                                               'wheel_zoom,'
+                                               'box_select,'
+                                               'lasso_select,'
+                                               'reset,'
+                                               'help,'
+                                               'save')}):
         """
         Initiaties the empty figure.
         """ 
         self.figure = figure(x_axis_label='Value',
-                             y_axis_label='Count')
-    
+                             y_axis_label='Count',
+                             **fig_props)
+        
+
     def _init_slider(self):
         """
         Inititiates the feature selection slider.
         """
-        self.slider = Slider(start=0, end=self.X.shape[1], step=1)
-        self.slider.callback = self._slider_callback
+        self.slider = Slider(start=0, 
+                             end=float(self.X.shape[1]-1), 
+                             step=1.0,
+                             value=0,
+                             show_value=False)
+        self.slider.on_change('value', self._slider_callback)
+        self.slider.title = self.X.columns[0]
 
-    def _slider_callback(self):
+    def _slider_callback(self, attr, old, new):
         """
         Callback for the slider widget which selects which feature to plot a histogram of. Code will be ran when the value of the slider changes.
         """
-        idx = self.slider.value
+        idx = int(new)
         feature_values = self.X.iloc[:, idx].values
-        # update the histogram
         self._update_histogram(feature_values)
-
+        self.slider.title = self.X.columns[idx]
     def _get_histogram_values(self, values):
         """
         Values (np.ndarray): values of the feature.
@@ -548,25 +562,33 @@ class HistView():
         count_arr = self._get_histogram_values(values)
         hist_bottoms = np.zeros(count_arr.shape[0]) 
         for i, hist in enumerate(self.hists):
-            hist.bottom = hist_bottoms
-            hist.top = hist_bottoms+count_arr[i]
-            hist_bottoms = hist_bottoms + count_arr[i]
+            hist.data_source.data['bottom'] = hist_bottoms
+            hist.data_source.data['top'] = hist_bottoms+count_arr[:,i]
+            hist_bottoms = hist_bottoms + count_arr[:,i]
 
     def _init_histogram(self):
         """
         Plots the initial histogram of the first feature.
         """       
-        
         left_edges = self.bin_edges[:-1]
         right_edges = self.bin_edges[1:]
-        feature_values = self.X.iloc[:, 0].values
+        feature_values = self.X.iloc[:,0].values
         count_arr = self._get_histogram_values(feature_values)
         hist_bottoms = np.zeros(count_arr.shape[0])
         self.hists = []
-        for i in range(count_arr.shape[1]):
+        possible_targets = np.unique(self.y)
+        num_targets = len(possible_targets)
+        try:
+            colours = Category20[num_targets]
+        except KeyError:
+            colours = Category20[num_targets+1]
+        for i in range(num_targets):
             hist = self.figure.quad(bottom=hist_bottoms,
                                     left=left_edges,
                                     right=right_edges,
-                                    top=count_arr[i]+hist_bottoms)
-            hist_bottoms = hist_bottoms + count_arr[i]
+                                    top=count_arr[:,i]+hist_bottoms, 
+                                    alpha=0.75,
+                                    color=colours[i],
+                                    legend=str(possible_targets[i]))
+            hist_bottoms = hist_bottoms + count_arr[:,i]
             self.hists.append(hist)
