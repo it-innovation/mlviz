@@ -453,6 +453,9 @@ class HistView():
         y (np.ndarray): 1D array of target values for each of the 
                             n instances in X.
     """
+    # TO DO: 
+    # 1. Add catch / check for if a target is not provided
+    # 2. Make robust to non-scaled features.
 
     def __init__(self, X, y=None, url='localhost:8888', bin_count=50):
         """
@@ -516,8 +519,8 @@ class HistView():
         """ 
         self.figure = figure(x_axis_label='Value',
                              y_axis_label='Count',
+                             title='Feature Histogram by Class',
                              **fig_props)
-        
 
     def _init_slider(self):
         """
@@ -539,6 +542,7 @@ class HistView():
         feature_values = self.X.iloc[:, idx].values
         self._update_histogram(feature_values)
         self.slider.title = self.X.columns[idx]
+        
     def _get_histogram_values(self, values):
         """
         Values (np.ndarray): values of the feature.
