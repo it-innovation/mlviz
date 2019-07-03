@@ -29,28 +29,36 @@ class UVFS():
     """
     Calculates univariate statistical tests to allow feature selection.
     
+    Parameters:
+    -----------
+    X : pd.DataFrame, shape [n_instances, n_features] (default=None)
+        Training set.
+
+    y : array-like, shape [n_instances] (default=None)
+        Target class of each training instance.
+    
+    url :str, (default="localhost:8888")
+        Location (port) of Jupyter notebook to output
+    
+    data_dictionary : dict
+        An sklearn data dictionary, used to load toy datasets.
+
     Attributes:
-        self.X (pd.DataFrame): the data matrix.
-        self.y (np.ndarray): target variables of data
-        self.feature_names (list): list of names of the features
+    -----------
+    X : pd.DataFrame, shape [n_instances, n_features]
+        Training set.
+
+    y : array-like, shape [n_instances]
+        Target class of each training instance.
+
+    feature_names : list
+        List of feature names selecte by user.
     """
 
-    def __init__(self, 
-                 X=None,
-                 y=None,
-                 url="localhost:8888",
+    def __init__(self, X=None, y=None, url="localhost:8888", 
                  data_dictionary=None):
         """
         Constructer for the UVFS tool.
-
-        Parameters:
-            X (pd.DataFrame):  (n x m) dataframe with n instances and m 
-                               features. 
-            y (np.ndarray): target of each train instance. Length n.
-            url (str): location of notebook to output graphics too.
-                       Defaults to localhost:8888.
-            data_dictionary (dict): an sklearn data dictionary. Used to load toy
-                                    datasets.
         """
         self.get_data(X=X, y=y, data_dictionary=data_dictionary)
         self._data_dictionary = None
@@ -62,15 +70,16 @@ class UVFS():
 
     def get_data(self, X=None, y=None, data_dictionary=None):
         """
-        Generate the class attributes for the data. If an sklearn data
-        dictionary is provided it will extract the relevant values from the dictionary.
-        
-        Parameters:
-            X (pd.DataFrame):  (n x m) dataframe with n instances and m 
-                               features. 
-            y (np.ndarray): target of each train instance. Length n.
-            data_dictionary (dict): data stored in a sklearn type data
-                                    dictionary.
+        Loads or prepares the data.
+
+        X : pd.DataFrame, shape [n_instances, n_features] (default=None)
+            Training set.
+
+        y : array-like, shape [n_instances] (default=None)
+            Target class of each training instance.
+    
+        data_dictionary : dict, (default=None)
+            An sklearn data dictionary, used to load toy datasets.
         """
         if all(i is None for i in [X, data_dictionary]):
             raise Exception('No data provided.')
@@ -83,25 +92,25 @@ class UVFS():
             self.X, self.y = X, y
             self.feature_names = X.columns.tolist()
         
-    def compute_information(self, metrics=['mi', 'f-value']):
+    def compute_information(self, metrics=["mi", "f-value"]):
         """
         Computes the different statistical tests. Current metrics supported
         are mutual information and f-value.
 
         Parameters:
-            metrics (list): A list of the different statistical tests to use.
+        -----------
+        metrics : list, shape [n_metrics] (default=["mi", "f-value"])
+            The different statistical tests to use.
 
         TO DO:
 
         We should not be transforming the data. 
 
-        This is infact dangerous!
-
         We don't want to be computing statistics on transformed data in case this isn't what the user wants.
         """
         
         # the metrics currently implemented 
-        implemented_metrics = ['mi', 'f-value']
+        implemented_metrics = ["mi", "f-value"]
         
         if any(metric not in implemented_metrics for metric in metrics):
                 raise ValueError('Unknown metric provided. '
@@ -113,39 +122,39 @@ class UVFS():
         #Discretise target, if continuous
         target_type = type_of_target(self.y)
 
-        if target_type not in ['binary', 'multiclass', 'multiclass-multioutput',
-                               'multilabel-indicator', 'multilabel-sequences']: 
-            print('Discretising ... ', end='')
+        if target_type not in ["binary", "multiclass", "multiclass-multioutput",
+                               "multilabel-indicator", "multilabel-sequences"]: 
+            print("Discretising ... ", end="")
             
             #Discretise target
             binner = KBinsDiscretizer(n_bins=7,
-                                      encode='ordinal',
-                                      strategy='uniform')
+                                      encode="ordinal",
+                                      strategy="uniform")
             binner.fit(y)
             y = binner.transform(self.y)
-            print('DONE!')
+            print("DONE!")
         else:
             y = self.y
         
-        # All this should be done in the 'get data'  method.
+        # All this should be done in the "get data"  method.
         #Imput missing values
-        imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+        imputer = SimpleImputer(missing_values=np.nan, strategy="mean")
         imputer.fit(self.X) 
         X = imputer.transform(self.X)
 
         # this needs to be tidied
         #Calculate each metric
-        if 'f-value' in metrics:
-            print('Calculating f-value ... ', end='')
+        if "f-value" in metrics:
+            print("Calculating f-value ... ", end="")
             f, p = fvalue(X, y)
             self._f_value = f
-            print('DONE!')
+            print("DONE!")
 
-        if 'mi' in metrics:
-            print('Calculating MI ... ', end='')
+        if "mi" in metrics:
+            print("Calculating MI ... ", end="")
             minf = mi(X, y, n_neighbors=7)
             self._mi = minf
-            print('DONE!')
+            print("DONE!")
 
     def _f_value_slider_callback(self, attr, old, new):
         """
@@ -168,15 +177,20 @@ class UVFS():
     def _f_value_panel(self):
         """
         Creates the f value panel.
+
+        Returns:
+        --------
+        panel : bokeh.layouts.Panel object
+            Panel containing relevent bokeh models
         """
         if self._f_value is None:
-            self.compute_information(['f-value'])
+            self.compute_information(["f-value"])
 
         y_ax = np.array(self._f_value)
         x_ax = self.feature_names
  
-        TOOLS = ('box_select, box_zoom, pan, tap, wheel_zoom,'
-                ' reset, save,zoom_in, zoom_out, crosshair')
+        TOOLS = ("box_select, box_zoom, pan, tap, wheel_zoom,"
+                " reset, save,zoom_in, zoom_out, crosshair")
                 
         self._source_f_value = ColumnDataSource(dict(x=x_ax, y=y_ax))
 
@@ -207,10 +221,17 @@ class UVFS():
         Callback for the mi slider.
 
         Parameters:
-            attr (str): 
-            old (array):
-            new (array): 
+        ----------
+        attr : str
+            Attribute to monitor (i.e., indices, value) of data.
+        
+        old : Any
+            Old value(s) of attr
+
+        new : Any
+            New value(s) of attr.
         """
+
         # it would be nice if these variable names were more descriptive
         if new == 0:
             selected_idxs = list(range(self.feature_names))
@@ -224,6 +245,11 @@ class UVFS():
     def _mi_panel(self):
         """
         Creates the mutual information panel.
+
+        Returns:
+        --------
+        panel : bokeh.layouts.Panel object
+            Panel containing relevent bokeh models
         """
         if self._mi is None:
             self.compute_information(['mi'])
@@ -252,25 +278,31 @@ class UVFS():
                         value=0,
                         step=slider_step,
                         title="Min. MI")
-        slider.on_change('value', self._mi_slider_callback)
-        panel = Panel(child=column(slider, plot), title='Mutual Information')
+        slider.on_change("value", self._mi_slider_callback)
+        panel = Panel(child=column(slider, plot), title="Mutual Information")
         return panel
 
-    def get_selected_features(self, metric='mi', return_names=True):
+    def get_selected_features(self, metric="mi", return_names=True):
         """
         Gets the features selected by the thresholded Mutual information.
         
         Parameters:
-            metric (str): which metric to use to select the features. Defaults
-                          to mi. Can take f-value or mi.
-            return_names (np.ndarray): Boolean value. If True the function will 
-                                       return the names of the features. If
-                                       False is will return the numerical
-                                       index for each selected feature.
+        -----------
+        metric : str, (default="mi") 
+            Metric used to select the features. Possible values are "mi" or 
+            "f-value"
+        
+        return_names : bool, (default=True)
+            whether to return name or numerical indices of selected features.
+        
+        Returns:
+        --------
+        selected_features : array-like
+            Array of the features selected by user.
         """
-        sources = {'mi':self._source_mi,
-                   'f-value':self._source_f_value}
-        print(f'Getting features selected by {metric}')
+        sources = {"mi":self._source_mi,
+                   "f-value":self._source_f_value}
+        print(f"Getting features selected by {metric}")
         source = sources[metric]
         if source is None:
             raise Exception('No source available.')
@@ -288,7 +320,9 @@ class UVFS():
         Shows and sets up the user interface.
         
         Parameters:
-            doc (bokeh document): 
+        -----------
+        doc : bokeh.Document
+            Document instance to collect bokeh models in.
         """
         # this throws a depreciation warning.
         doc.theme = Theme(json=yaml.load("""
@@ -313,11 +347,21 @@ class UVFS():
     def show_example(fpath='data/static/UVFS_example.gif'):
         """
         Displays an interactive example of the UVFS tool usage.
+
+        Parameters:
+        ----------
+        fpath : str, (default="data/static/UVFS_example.gif")
+            fpath of .gif to display when called.
+
+        Returns
+        -------
+        image, Ipython.core.display.Image instance
+            .gif to be displayed in notebook.
         """
         return Image(filename=fpath)
 
     def run_ui(self):
         """
-        Shows the UI
+        Shows the UI.
         """
         return show(self._notebook_ui)

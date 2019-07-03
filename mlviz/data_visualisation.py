@@ -23,7 +23,7 @@ from bokeh.application import Application
 
 # things for controlling colour
 from bokeh.transform import linear_cmap
-from bokeh.palettes import Viridis256, Category20
+from bokeh.palettes import Viridis256, Category20, inferno
 from bokeh.models import ColorBar, BasicTicker
 
 # dimensionality reduction algorithms
@@ -35,32 +35,42 @@ from IPython.core.display import Image
 
 class DraughtPlot():
     """
-    Plots a draughtsman plot of provided data.
+    Plots a draughtsman plot (a.k.a a pair plot) of provided data
 
+    Parameters:
+    -----------
+    X : pd.Dataframe, shape [n_instances, n_features]
+        The training set.
+    
+    y : {None or array-like}, shape [n_instances] (default=None)
+        Target class of each of the n_instances instances.
+
+    features : {None or list}, (default=None) 
+        List of the feature names to plot. If None, the first five
+        features of X are used. If the target needs to be included in the
+        Draughtsman plot include the string "target" in the feature  list.
+
+    url : str, (default="localhost:8888")
+        Location (port) of the jupyter notebook to output figure too.
+    
     Attributes:
-        X (pd.DataFrame): (n x m) dataframe with n instances and m      
-                          features.
-        y (np.ndarray): 1D array of target values for each of the 
-                            n instances in X.
-        brush_idxs (np.ndarray): idxs of different clusters to plot.
+    -----------
+    X : pd.Dataframe, shape [n_instances, n_features]
+        The training set.
+    
+    y : {None or array-like}, shape [n_instances] 
+        Target class of each of the n_instances instances.
 
-        features (list): list (of max length 10) of features to plot.
+    brush_idxs : array-like
+        Indices of the different clusters plotted.
+
+    features : list
+        Names of features which are plotted.
     """
 
-    def __init__(self, X, y=None, features=None, url='localhost:8888'):
+    def __init__(self, X, y=None, features=None, url="localhost:8888"):
         """
         Constructer for the DraughtPlot class. 
-        
-        Parameters:
-            X (pd.DataFrame): (n x m) dataframe with n instances and m      
-                              features. 
-            y (np.ndarray): 1D array of target values for each of the 
-                            n instances in X. Defaults to None.
-            features (list): list (of max length 10) of features to plot.
-                             Defaults to None. If you want to plot the
-                             target include a list of features with 
-                             'target' in.
-            url (str): url of notebook for output.
         """
         self.X = X
         self.y = y
@@ -80,7 +90,9 @@ class DraughtPlot():
         function which constructs the application.
         
         Parameters:
-            doc (bokeh.Document): Document instance to collect bokeh models in.
+        -----------
+        doc : bokeh.Document
+            Document instance to collect bokeh models in.
         """
         self._make_data_source()
         self._make_figures()
@@ -94,7 +106,9 @@ class DraughtPlot():
         Constructs the document layout object.
         
         Returns:
-            doc_layout (layout): returns grid layout of bokeh layout objects.
+        --------
+        doc_layout : bokeh.layouts.layout object
+            Grid layout of bokeh models used in figure.
         """
         cb_figure = Column(self._create_colour_bar())
         widgets = Column(self.widgets['select_color'],
@@ -114,10 +128,13 @@ class DraughtPlot():
                                                 'save')}
                                        ):
         """
-        Creates a grid of empty figures.
+        Creates a grid of empty figures and stores references to each object in
+        an array.
 
-        References to the figures are stored in a numpy array, the value
-        of each entry is the figure object.
+        Parameters:
+        -----------
+        fig_props : dict,
+            kwargs to pass to each figure instance when instantiated.
         """
         self.figures = np.array([])
         # could replace this with a single for loop using itertools
@@ -133,7 +150,12 @@ class DraughtPlot():
 
     def _make_widgets(self, widget_width=200):
         """
-        Generates the widgets the user can use to interact with the graph.
+        Generates the widgets to be used for interaction.
+
+        Parameters:
+        -----------
+        widget_width : int, (default=200)
+            width of the widgets in pixels.
         """
         # dictionary storing: (widget type, kwargs, callback) for each widget
         widget_definitions = {'select_color':(Select,
@@ -169,16 +191,24 @@ class DraughtPlot():
     
     def _get_axis_labels(self, col_num, row_num):
         """
-        For give column and row numbers provides the labels for the 
-        x and y axis for this figure panel.
+        For given column and row numbers provides the labels for the 
+        x and y axis for specified figure.
 
         Parameters:
-            col_num (int): column index of figure panel
-            row_num (int): row index of figure panel
+        -----------
+        col_num : int
+            Column index of figure
+
+        row_num : int
+            Row index of figure
 
         Returns:
-            x_label (str): Label for x axis
-            y_label (str): label for y axis
+        --------
+        x_label : str
+            x axis label for figure at [row_num, col_num]
+
+        y_label : str
+            y axis label for figure at [row_num, col_num]
         """
         x_label, y_label = '', ''
         if col_num==(len(self.features)-1):
@@ -235,13 +265,23 @@ class DraughtPlot():
         Plots a histogram to a given figure.
 
         Parameters:
-            figure (bokeh.plotting.figure): figure object to plot too.
-            counts (np.ndarray): Counts in each bin of histogram.
-            bin_edges (np.ndarray): edges of histogram bins.
-            hist_props (dict): kwargs to pass to fig.quad.
+        -----------
+        figure : bokeh.plotting.figure object
+            Figure object to plot the histogram.
+
+        counts : array-like, shape [n_bins]
+            Counts in each bin of histogram.
+
+        bin_edges : array-like, shape [n_bins+1]
+            Edges of the bins. 
+        
+        hist_props : dict 
+            kwargs to pass to figure.quad method.
 
         Returns:
-            hist (GlyphRenderer): Bokeh GlyphRenderer object of plotted data.
+        --------
+        hist : GlyphRenderer object
+            GlyphRenderer object of plotted data.
         """
         left_edges = bin_edges[:-1]
         right_edges = bin_edges[1:]
@@ -265,16 +305,23 @@ class DraughtPlot():
 
     def _plot_scatter(self, figure, f1, f2):
         """
-        Plots a scatter of two features (f1 and f2) for all training instances
-        in self.source.
+        Plots scatter graph of given features (f1 and f2) for all training instances.
 
         Parameters:
-            figure (bokeh.figure): bokeh figure to plot too
-            f1 (str): name of feature to plot on x-axis
-            f2 (str): name of feature to plot on y-axis
+        -----------
+        figure : bokeh.figure object 
+            Figure object to plot scatter too.
+        
+        f1 : str
+            Name of feature to plot on x-axis.
+        
+        f2 : str
+            Name of feature to plot on y-axis.
 
         Returns:
-            scatter (bokeh.GlyphRenderer) GlpyhRenderer object for plotted data.
+        --------
+        scatter : bokeh.GlyphRenderer object
+            GlyphRenderer object for plotted data.
         """
         scatter = figure.scatter(x=f1, y=f2,
                                  source=self.source,
@@ -291,7 +338,9 @@ class DraughtPlot():
         Creates a colorbar in an empty bokeh figure.
 
         Returns:
-            colorbar_fig (bokeh.figure): figure containing the colorbar.
+        --------
+        colorbar_fig : bokeh.figure object
+            Figure object containing the colorbar.
         """
         self.color_bar = ColorBar(color_mapper=self.color_mapper['transform'],
                                   width=8)
@@ -305,12 +354,22 @@ class DraughtPlot():
     def _plot_text(self, figure, col_num, row_num):
         """
         Adds text, describing statistical properties of features of figure
-        located at indices (col_num, row_num).
+        located at  [col_num, row_num].
         
         Parameters:
-            figure (bokeh.figure): figure object to plot text too
-            col_num (int): vertical index of figure panel
-            row_num (int): horizontal index of figure panel
+        -----------
+        figure : bokeh.figure object
+            Figure object to plot text too.
+
+        col_num : int
+            Column index of figure object.
+        
+        row_num : int
+            Row index of figure object.
+
+        Returns:
+        --------
+        text : GlyphRenderer object of the text.
         """
         figure_text = self._generate_panel_text(col_num, row_num)
         text = figure.text(x=[0], y=[0],
@@ -327,11 +386,16 @@ class DraughtPlot():
         Returns the text for the figure at (col_num, row_num).
 
         Parameters:
-            col_num (int): vertical index of figure panel
-            row_num (int): horizontal index of figure panel
+        -----------
+        col_num : int 
+            Column index of figure panel
+        row_num : int 
+            Row index of figure panel
 
-        Returns: 
-            text (str): text describing two features correlations.
+        Returns:
+        --------
+        text : str
+            Text describing features correlations (Pearson's r).
         """
         correlation_coeff = self.corr_matrix.iloc[row_num, col_num]
         text = 'r: {:.2f}'.format(correlation_coeff)
@@ -345,6 +409,11 @@ class DraughtPlot():
 
         To calculate the correlation matrix, the setter calls the .corr()
         method of pd.DataFrame.
+
+        Returns:
+        --------
+        _corr_matrix : array-like, shape [n_features, n_features]
+            Correlation matrix of the training set (X).
         """
         return self._corr_matrix
 
@@ -352,40 +421,59 @@ class DraughtPlot():
     def corr_matrix(self, df):
         self._corr_matrix = df.corr()
     
-    def _gen_hist_data(self, x, bin_count=20):
+    def _gen_hist_data(self, x, n_bins=20):
         """
-        Creates a histogram of provided data (x).
+        Creates a histogram of data provided in x.
 
         Parameters:
-            x (np.array): 1D array of data to generate histogram of.
-            bin_count (int): number of bins in histogram.
+        -----------
+        x : array-like, shape [n_instances]
+            Array of data to generate histogram of.
+
+        n_bins: int, (default=20)
+            Number of bins to use in histogram.
+
+        Returns:
+        --------
+        counts : array-like, shape [n_bins]
+            Number of instances in each bin.
+
+        bin_edges : array-like, shape [n_bins+1]
+            Edges of the bins.
 
         TO DO: 
             1. Need to make bins never change for a given feature.
             Or get them from the figure?
         """
-        counts, bins = np.histogram(x, bins=bin_count)
-        return counts, bins
+        counts, bin_edges = np.histogram(x, bins=n_bins)
+        return counts, bin_edges
 
     @staticmethod
     def _check_fig_type(col_num, row_num):
         """
         Given the (row, column) index of a figure return the type of figure it
-        is. Possible values are 'histogram', 'scatter' or 'text'.
+        is. Possible values are "histogram", "scatter" or "text".
 
         Parameters:
-            col_num (int): vertical index of figure panel
-            row_num (int): horizontal index of figure panel
+        -----------    
+        col_num : int
+            Column index of figure panel.
+
+        row_num : int
+            Row index of figure panel.
 
         Returns:
-            figure_type (str): type of figure at (col_num, row_num)
+        --------
+        figure_type : str
+            Type of the figure at position [row_num, col_num]. Can take values 
+            equal too: "histogram", "scatter" or "text".
         """
         if row_num==col_num:
-            figure_type = 'histogram'
+            figure_type = "histogram"
         elif col_num>row_num:
-            figure_type = 'scatter'
+            figure_type = "scatter"
         else:
-            figure_type = 'text'
+            figure_type = "text"
         return figure_type
 
     def _make_data_source(self):
@@ -394,20 +482,20 @@ class DraughtPlot():
         ensures a cluster_number column exists in the df.
         """
         try:
-            cols_to_keep = self.features + ['cluster_number']
+            cols_to_keep = self.features + ["cluster_number"]
             self.source = ColumnDataSource(self.X[cols_to_keep])
         except KeyError:
             # No cluster_number column defined, make a dummy one
             self.source = ColumnDataSource(self.X[self.features])
             cluster_numbers = np.ones(self.X.shape[0])
             self.source.add(data=cluster_numbers,        
-                            name='cluster_number')
+                            name="cluster_number")
         # create markers for the scatter plot if target is binary
-        self.markers = np.array(['circle']
-                                *len(self.source.data['cluster_number']))
+        self.markers = np.array(["circle"]
+                                *len(self.source.data["cluster_number"]))
         if utils.is_binary(self.y):
-            self.markers[self.y==0] = 'square'
-        self.source.add(data=self.markers, name='markers')
+            self.markers[self.y==0] = "square"
+        self.source.add(data=self.markers, name="markers")
 
     
     def _update_plot(self, attr, old, new):
@@ -415,9 +503,15 @@ class DraughtPlot():
         Updates the text description with data points select in the scatter.
 
         Parameters:
-            attr (str): attribute to monitor (i.e., indices of selected data)
-            old (): old value(s) of attribute.
-            new (): new value(s) of attribute.
+        -----------
+        attr : str
+            Attribute to monitor (i.e., indices, value) of data.
+        
+        old : Any
+            Old value(s) of attr
+
+        new : Any
+            New value(s) of attr.
         """
         inds = new
         # get data selected by user, or all data.
@@ -429,14 +523,219 @@ class DraughtPlot():
         for i, __ in enumerate(self.features):
             for j, __ in enumerate(self.features):
                 plot_type = self._check_fig_type(i,j)
-                if plot_type=='text':
+                if plot_type=="text":
                     (self._glyphs[i,j]
                         .data_source
-                        .data['text']) = [self._generate_panel_text(i,j)]
+                        .data["text"]) = [self._generate_panel_text(i,j)]
 
     @staticmethod
-    def show_example(fpath='data/static/DraughtPlot_example.gif'):
+    def show_example(fpath="data/static/DraughtPlot_example.gif"):
         """
         Displays a .gif demonstrating how to use the tool.
+
+        Parameters:
+        -----------
+        fpath : str, default="data/static/DraughtPlot_example.gif"
+            Location of example .gif to show.
         """
         return Image(filename=fpath)
+
+class HistView():
+    """
+    Histogram viewer which plots histograms of a feature, the feature displayed
+    can be controlled by using a slider. Currently all features values must be 
+    bounded between 0 and 1.
+
+    Parameters:
+    -----------
+    X : pd.DataFrame, shape [n_instances, n_features]
+        The training set.
+
+    y: array-like, shape [n_instances] (default=None)
+        Target class of each instance in X.
+
+    url : str, default="localhost:8888"
+        Location (port) of the jupyter notebook to display figure too.
+    
+    bin_count : int, (default=50)
+        Number of bins to seperate histogram into.
+        
+    Attributes:
+    -----------
+    X : pd.DataFrame, shape [n_instances, n_features]
+        The training set.
+
+    y: array-like, shape [n_instances] (default=None)
+        Target class of each instance in X.
+    """
+    # TO DO: 
+    # 1. Add catch / check for if a target is not provided
+    # 2. Make robust to non-scaled features.
+
+    def __init__(self, X, y=None, url="localhost:8888", bin_count=50):
+        """
+        Constructer for the HistView class.
+        """
+        # Need to add checks to only plot a fraction of the data if it is large.
+        self.X, self.y = X, y
+        self.bin_edges = np.linspace(0, 1, bin_count+1)
+        self._are_features_bounded(X)
+        app = Application(FunctionHandler(self._make_bokeh_doc)) # make document
+        show(app, notebook_url=url) # show document in notebook
+
+    def _make_bokeh_doc(self, doc):
+        """
+        Main method controlling the construction of the bokeh document.
+
+        Parameters:
+        -----------
+        doc : bokeh.Document object
+            Document instance to contain all required Bokeh models.
+        """
+        self._init_figure()
+        self._init_slider()
+        self._init_histogram()
+
+        doc_layout = layout([self.slider, self.figure])
+        doc.add_root(doc_layout) # add layout to our document
+
+    def _are_features_bounded(self, X):
+        """
+        Checks features are bounded between 0 and 1 and if not raises an 
+        exception suggesting the use of MinMaxScaler.
+
+        Parameters:
+        -----------
+        X : pd.DataFrame, shape [n_instances, n_features]
+            Training set.
+        """
+        max_feature_value = X.max(axis=0).values
+        min_feature_value = X.min(axis=0).values
+        features_bounded = all((min_feature_value>-1e-6) &
+                               (max_feature_value<1.00001))
+        if not features_bounded:
+            raise Exception('Features must be bounded between 0 and 1!'
+                            'Try using MinMaxScaler from sklearn to prepare'
+                            'your features for HistView.')
+
+    def _init_figure(self, fig_props={'plot_height':500, 
+                                      'plot_width':500, 
+                                      'tools':('box_zoom,'
+                                               'wheel_zoom,'
+                                               'reset,'
+                                               'help,'
+                                               'save')}):
+        """
+        Instantiates the figure.
+
+        Parameters:
+        -----------
+        fig_props : dict 
+            kwargs to be passed to figure instance.
+        """ 
+        self.figure = figure(x_axis_label='Value',
+                             y_axis_label='Count',
+                             title='Feature Histogram by Class',
+                             **fig_props)
+
+    def _init_slider(self):
+        """
+        Instantiates the feature selection slider.
+        """
+        self.slider = Slider(start=0, 
+                             end=float(self.X.shape[1]-1), 
+                             step=1.0,
+                             value=0,
+                             show_value=False)
+        self.slider.on_change('value', self._slider_callback)
+        self.slider.title = self.X.columns[0]
+
+    def _slider_callback(self, attr, old, new):
+        """
+        Callback for the feature selection slider. Code will be ran when the value of the slider changes.
+        
+        Parameters:
+        -----------
+        attr : str 
+            Attribute of slider to monitor
+        
+        old : Any
+            Old value of attr
+        
+        new : Any 
+            New value of attr
+        """
+        idx = int(new)
+        feature_values = self.X.iloc[:, idx].values
+        self._update_histogram(feature_values)
+        self.slider.title = self.X.columns[idx]
+
+    def _get_histogram_values(self, values):
+        """
+        Given an array of values generates a histogram for each value of target.
+        These are then stacked in columns.
+
+        Parameters:
+        -----------
+        values : array-like, shape [n_instances] 
+            array-like object of values to bin.
+
+        Returns:
+        --------
+        count_arr : array-like : [n_bins, n_targets] 
+            Each column contains is the histogram for training instances for a 
+            given value of target.
+        """
+        target_values = np.unique(self.y)
+        # init empty array to store counts of each target [n_bins, n_targets]
+        count_arr = np.zeros((len(self.bin_edges)-1, len(target_values)))
+        for idx, target in enumerate(target_values):
+            masked_values = values[self.y==target]
+            counts, _ = np.histogram(masked_values, bins=self.bin_edges)
+            count_arr[:, idx] = counts
+        return count_arr
+
+    def _update_histogram(self, values):
+        """
+        Function which updates histogram after the slider has changed.
+
+        Parameters:
+        -----------
+        values : array-like 
+            Values to create histogram of.
+        """
+        count_arr = self._get_histogram_values(values)
+        hist_bottoms = np.zeros(count_arr.shape[0]) 
+        for i, hist in enumerate(self.hists):
+            hist.data_source.data['bottom'] = hist_bottoms
+            hist.data_source.data['top'] = hist_bottoms+count_arr[:,i]
+            hist_bottoms = hist_bottoms + count_arr[:,i]
+
+    def _init_histogram(self):
+        """
+        Plots the initial histogram, uses the 0th feature.
+        """       
+        feature_values = self.X.iloc[:,0].values
+        count_arr = self._get_histogram_values(feature_values)
+        possible_targets = np.unique(self.y)
+        num_targets = len(possible_targets)
+        try:
+            colours = Category20[num_targets]
+        except KeyError:
+            # if there are two features, use three feature cs
+            colours = Category20[num_targets+1]
+        
+        left_edges = self.bin_edges[:-1]
+        right_edges = self.bin_edges[1:]
+        hist_bottoms = np.zeros(count_arr.shape[0])
+        self.hists = []
+        for i in range(num_targets):
+            hist = self.figure.quad(bottom=hist_bottoms,
+                                    left=left_edges,
+                                    right=right_edges,
+                                    top=count_arr[:,i]+hist_bottoms, 
+                                    alpha=0.75,
+                                    color=colours[i],
+                                    legend=str(possible_targets[i]))
+            hist_bottoms = hist_bottoms + count_arr[:,i]
+            self.hists.append(hist)
