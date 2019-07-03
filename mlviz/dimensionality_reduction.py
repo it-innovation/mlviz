@@ -41,29 +41,38 @@ from umap import UMAP
 
 class HDVis():
     """
-    Plots a 2D representation of high dimensional data and allows users to
-    interactively extract data points.
+    Plots a 2D representation of a high dimensional dataset and allows users to
+    interactively extract subsets of the data.
     
+    Parameters:
+    -----------
+    X : pd.DataFrame, shape [n_instances, n_features]
+        The training set to transform.
+
+    y : array-like, shape [n_instances]
+        Target class of each instance in X.
+
+    url : str, (default="localhost:8888")
+        Location (port) of the jupyter notebook to display the figure in.
+    
+    Additional kwargs are passed to the dimensionality reduction method used.
+
     Attributes:
-        X (pd.DataFrame): (n x m) dataframe with n instances and m features.
-        y (np.ndarray): length n array containing target of each instance.
-        brushes (list): list containing indices of data brushed by the user.
+    -----------
+    X : pd.DataFrame, shape [n_instances, n_features]
+        The training set to transform.
+
+    y : array-like, shape [n_instances]
+        Target class of each instance in X.
+        
+    brushes : array-like, shape [n_brushes]
+        Array containing the indices of the n_brushes of subsets of the data
+        brushed by the users.
     """
     
     def __init__(self, X, y=None, url="localhost:8888", **kwargs):
         """
         Constructor for the HDVis class.
-        
-        Parameters:
-            X (pd.DataFrame): (n x m) dataframe with n instances and m features. 
-                              Columns labels are used as feature names.
-            y (np.ndarray): length n array containing target of each instance.
-                            Defaults to None.
-            url (str): location of notebook to display plots in.
-                                Defaults to localhost:8888
-        
-        Any additional kwargs are passed to the dimensionality reduction method
-        used.
         """
         self.X, self.y = X, y
         self.features = X.columns.to_numpy()
@@ -83,8 +92,11 @@ class HDVis():
         function which constructs the application.
         
         Parameters:
-            doc (bokeh.Document): Document instance to collect bokeh models in.
-            fig_props (dict): kwargs provided to bokeh.figure.
+        -----------
+        doc : bokeh.Document
+            Document instance to collect bokeh models in
+        fig_props : dict
+            kwargs to pass bokeh.figure instance.
         """
         self.fig = figure(**fig_props) # create empty central panel
         self._generate_widgets()
@@ -97,18 +109,23 @@ class HDVis():
         Creates a ColumnDataSource instance from provided dataframe.
 
         Parameters:
-            df (pd.DataFrame): dataframe to use in construction of CDS.
+        -----------
+        df : pd.Dataframe, shape [n_rows, n_columns]
+            Dataframe to construct ColumnDataSource from.
+
         Returns:
-            source (ColumnDataSource): instance of CDS
+        --------
+        source : ColumnDataSource
+            ColumnDataSource instance of the data in df.
         """
         source = ColumnDataSource(df)
-        # add dummy column for holding colour of each d.p
+        # add a dummy column for colour of each d.p
         source.add(np.zeros(df.shape[0]), name='color')
         return source 
 
     def _generate_widgets(self):
         """
-        Generates the widget instances used for user interaction.
+        Generates the each widget instance used for user interaction.
         
         # TO DO: 
             refactor: change widgets to dict and tuple?
@@ -176,7 +193,9 @@ class HDVis():
         the widgets could be hardcoded.
         
         Returns:
-            doc_layout (layout): returns grid layout of bokeh layout objects.
+        --------
+        doc_layout : bokeh.layouts.layout object
+            Grid layout of bokeh models.
         """
         top_row = Row(self.widgets['add'],
                       Spacer(width=25),
@@ -252,7 +271,9 @@ class HDVis():
         Activates named widgets by assigning callbacks.
         
         Parameters:
-            widgets_to_activate (list): widgets to assign callbacks to.
+        -----------
+        widgets_to_activate : list, (default=["add", "clear", "change_color"])
+            Widgets to assign callbacks to.
         """
         for widget_name in widgets_to_activate:
             (self.widgets[widget_name]
@@ -265,12 +286,10 @@ class HDVis():
         dimensions.
             
         Parameters:
-            num_dim (int): number of dimensions to embed the data into.
-                           Currently only suppers num_dim=2.
-            
-        # TO DO:
-            Check X_sample indices are preseved
-            Need a way to feed in kwargs to these parameters
+        -----------
+        num_dim : int, (default=2)
+            Number of dimensions to embed the data into. Only num_dim=2 is 
+            currently supported.
         """
         reduction_methods = {'PCA':PCA, 'TSNE':TSNE, 'UMAP':UMAP}
         # sample the training array
@@ -306,11 +325,13 @@ class HDVis():
 
     def get_brushed_data(self):
         """
-        Returns a pd.DataFrame of the brushed data where the clusters are 
+        Returns Dataframe of the brushed data where the clusters are 
         assigned a number in the order they were brushed.
 
         Returns:
-            brushed_df (pd.DataFrame): the brushed data.
+        --------
+        brushed_df : pd.Dataframe
+            The data brushed by the user.
         """
         try: 
             # get the brushed data and assign a cluster number
@@ -330,9 +351,18 @@ class HDVis():
         return brushed_df, brushed_target
 
     @staticmethod
-    def show_example(fpath='data/static/HDViz_example.gif'):
+    def show_example(fpath="data/static/HDViz_example.gif"):
         """
         Displays a .gif demonstrating how to use the tool.
+
+        Parameters:
+        -----------
+        fpath : str, (default="data/static/HDViz_example.gif")
+
+        Return:
+        -------
+        Image, Image object
+            The .gif to be displayed in a jupyter notebook.
         """
         # this currently uses the .gif within the examples directory
         # it will not work in a generic notebook.
