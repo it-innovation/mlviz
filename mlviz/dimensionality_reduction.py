@@ -69,6 +69,7 @@ class HDVis():
         Array containing the indices of the n_brushes of subsets of the data
         brushed by the users.
     """
+    name = "HDVis"
     
     def __init__(self, X, y=None, url="localhost:8888", **kwargs):
         """
@@ -97,11 +98,17 @@ class HDVis():
             Document instance to collect bokeh models in
         fig_props : dict
             kwargs to pass bokeh.figure instance.
+
+        Returns:
+        --------
+        doc : bokeh.Document
+            The modified document instance.
         """
         self.fig = figure(**fig_props) # create empty central panel
         self._generate_widgets()
         doc_layout = self._make_doc_layout()
         doc.add_root(doc_layout)
+        return doc
 
     @staticmethod
     def _make_data_source(df):

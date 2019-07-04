@@ -67,7 +67,7 @@ class DraughtPlot():
     features : list
         Names of features which are plotted.
     """
-
+    name = "DraughtPlot"
     def __init__(self, X, y=None, features=None, url="localhost:8888"):
         """
         Constructer for the DraughtPlot class. 
@@ -571,6 +571,8 @@ class HistView():
     # TO DO: 
     # 1. Add catch / check for if a target is not provided
     # 2. Make robust to non-scaled features.
+
+    name = "HistView"
 
     def __init__(self, X, y=None, url="localhost:8888", bin_count=50):
         """
