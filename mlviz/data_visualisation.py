@@ -3,6 +3,8 @@
 import pandas as pd
 import numpy as np
 
+from mlviz.base import Interactor
+
 from utilities import utils
 
 from bokeh.plotting import figure
@@ -540,7 +542,7 @@ class DraughtPlot():
         """
         return Image(filename=fpath)
 
-class HistView():
+class HistView(Interactor):
     """
     Histogram viewer which plots histograms of a feature, the feature displayed
     can be controlled by using a slider. Currently all features values must be 
@@ -578,28 +580,26 @@ class HistView():
         """
         Constructer for the HistView class.
         """
-        # Need to add checks to only plot a fraction of the data if it is large.
         self.X, self.y = X, y
         self.bin_edges = np.linspace(0, 1, bin_count+1)
         self._are_features_bounded(X)
-        app = Application(FunctionHandler(self._make_bokeh_doc)) # make document
-        show(app, notebook_url=url) # show document in notebook
+        super().__init__(self.name, self._make_models, url)
 
-    def _make_bokeh_doc(self, doc):
+    def _make_models(self):
         """
         Main method controlling the construction of the bokeh document.
 
         Parameters:
         -----------
-        doc : bokeh.Document object
-            Document instance to contain all required Bokeh models.
+        doc_layout : bokeh.layouts.layout object
+            layout instance containing all required models.
         """
         self._init_figure()
         self._init_slider()
         self._init_histogram()
 
         doc_layout = layout([self.slider, self.figure])
-        doc.add_root(doc_layout) # add layout to our document
+        return doc_layout
 
     def _are_features_bounded(self, X):
         """
@@ -639,6 +639,25 @@ class HistView():
                              y_axis_label='Count',
                              title='Feature Histogram by Class',
                              **fig_props)
+
+    def _init_widgets(self):
+        """
+        Initiates the different widgets.
+        """
+        self._widgets["slider"] = (Slider, 
+                                  {"start":0, 
+                                   "end":float(self.X.shape[1]-1), 
+                                   "step":1.0,
+                                   "value":0,
+                                   "show_value":False,
+                                   "title":self.X.columns[0]},
+                                   self._slider_callback)
+                                   
+        for _, widget_props in self._widgets.items():
+            widget = widget_props[0](**widget_props[1])
+            if widget_props[2] is not None:
+                # add callback
+                widget.on_change('value', widget_props[2])
 
     def _init_slider(self):
         """

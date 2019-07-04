@@ -31,7 +31,7 @@ class Interactor():
 
     Attributes:
     -----------
-    _widgets : {None or dict}
+    _widgets : {dict}
         Dictionary of tuples of the widgets for a given tool. It is of the form:
         {"widget_name" : (widget_type, widget_kwargs, widget_callback), ...}
 
@@ -52,11 +52,10 @@ class Interactor():
     def __init__(self, name, init_doc, url="localhost:8888"):
         self.name = name # class name of the Interactor instance
         self.url = url
-        self._widgets = None
+        self._widgets = {}
         self._init_doc = init_doc
         app = Application(FunctionHandler(self._make_doc))
         show(app, notebook_url=self.url)
-
 
     def _make_doc(self, doc):
         """
@@ -71,7 +70,6 @@ class Interactor():
         --------
         doc : bokeh.Document instance
             The modified Document instance.
-
         """
         doc_layout = self._init_doc()
         doc.add_layout(doc_layout)
@@ -85,7 +83,7 @@ class Interactor():
         -----------
         fpath : str, default=None
             Path to the .gif to display. If fpath is None the following fpath
-            is used: f"data/static/{self.tool_name}_example.gif"
+            is used: f"data/static/{self.name}_example.gif"
 
         Return:
         -------
@@ -95,5 +93,5 @@ class Interactor():
         # this currently uses the .gif within the examples directory
         # it will not work in a generic notebook.
         if fpath is None:
-            fpath = "data/static/{}_example.gif".format(self.tool_name)
+            fpath = "data/static/{}_example.gif".format(self.name)
         return Image(filename=fpath)
