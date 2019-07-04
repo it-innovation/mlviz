@@ -29,6 +29,12 @@ class Interactor():
     url : str, (default="localhost:8888")
         Location (port) of the Jupyter notebook to output document too.
 
+    Attributes:
+    -----------
+    _widgets : {None or dict}
+        Dictionary of tuples of the widgets for a given tool. It is of the form:
+        {"widget_name" : (widget_type, widget_kwargs, widget_callback), ...}
+
     Examples:
     ---------
     The init_doc function should be consistent with:
@@ -41,16 +47,12 @@ class Interactor():
             doc_layout = bokeh.layouts.layout([fig])
         
             return doc_layout
-
-    # TO DO: 
-        1. Add widgets attribute, which all documents will have
-           This attribute will be a dictionary of tuples:
-            {'widget_name':(widget_type, widget_kwargs, widget_callback)}
     """
     
     def __init__(self, name, init_doc, url="localhost:8888"):
         self.name = name # class name of the Interactor instance
         self.url = url
+        self._widgets = None
         self._init_doc = init_doc
         app = Application(FunctionHandler(self._make_doc))
         show(app, notebook_url=self.url)
