@@ -594,7 +594,7 @@ class HistView(Interactor):
         doc_layout : bokeh.layouts.layout object
             layout instance containing all required models.
         """
-        self._init_figure()
+        self._init_figures()
         self._init_slider()
         self._init_histogram()
 
@@ -620,7 +620,7 @@ class HistView(Interactor):
                             'Try using MinMaxScaler from sklearn to prepare'
                             'your features for HistView.')
 
-    def _init_figure(self, fig_props={'plot_height':500, 
+    def _init_figures(self, fig_props={'plot_height':500, 
                                       'plot_width':500, 
                                       'tools':('box_zoom,'
                                                'wheel_zoom,'
@@ -652,7 +652,7 @@ class HistView(Interactor):
                                    "show_value":False,
                                    "title":self.X.columns[0]},
                                    self._slider_callback)
-                                   
+
         for _, widget_props in self._widgets.items():
             widget = widget_props[0](**widget_props[1])
             if widget_props[2] is not None:
