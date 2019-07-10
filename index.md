@@ -1,3 +1,5 @@
+# Introduction to MLViz
+
 A key stage of typical machine learning workflows is in the exploratory analysis of the available training data. The prime utility of this process is to gain a deeper insight into the data and allow an evaluation of the learning potential held in the training set. The process is typically iterative and begins with a high-level inspection of features, involving identifying any missing data and generating an imputation method for dealing with these. Generally, the training instance distributions of each feature is then investigated, with the aim of answering a range of questions, including:
 
 -	Are any features highly correlated?
@@ -16,8 +18,8 @@ Several python packages are available for producing interactive visualisations (
 In the following, we describe and show examples of some of the currently available tools. MLViz is an experimental project (and still in development - https://github.com/it-innovation/mlviz), designed to showcase the potential in this area. One prime area of focus going forward is to provide interactivity when exploring high-dimensional data, as this kind of data is one where the productivity impact of MLViz will likely be the greatest.  However, we are interested in users to test the tools and appreciate any feedback going forward.
 
 
-## The Dimensionality reduction tool
+## Dimensionality reduction
 
 Reducing the dimensionality of the feature space to two dimensions, while preserving as much as possible the structure of the high-dimensional space, is a common process in exploratory data analysis. This dimensionality reduction tool implemented in MLViz allows users to do this rapidly and extract observed clusters for investigation by other tools in the workflow to help identify how the extracted clusters are distributed in the high dimensional feature space. The below example shows how we use the tool to cluster the Wisconsin Breast Cancer Dataset (WBC - http://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29). The tool shows there are no distinct clusters, but the target classes are relatively well separated. This demonstrates that our data has a relatively high DRL and we will likely be able to build a good classifier of the target using this dataset. 
 
-<img src="mlviz/static/HDViz_example.gif" width="400" height="400" />
+<img src="mlviz/static/HDViz_example.gif" width="600" height="500" />
