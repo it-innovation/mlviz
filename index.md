@@ -15,9 +15,9 @@ Arguably the most natural way to inspect data is to ‘handle’ and interact wi
 
 Several python packages are available for producing interactive visualisations (e.g., Plotly, Bokeh and, Altair) and those for visualisations with a Machine learning or statistical focus (e.g., Seaborn and Yellowbrick), however,  there are no packages which effectively combine the two. In this blog we introduce MLViz which aims to address this need: it ships interactive visualisations with a machine learning focus and will allow analysts more time inspecting their data and less time writing code to generate effective visualisations. As MLViz directly integrates with Jupyter notebooks, it can be dropped into existing ML workflows and means it can be adopted with little change to current practices. 
 
-In the following, we describe and show examples of some of the currently available tools. MLViz is an experimental project (and still in development - https://github.com/it-innovation/mlviz), designed to showcase the potential in this area. One prime area of focus going forward is to provide interactivity when exploring high-dimensional data, as this kind of data is one where the productivity impact of MLViz will likely be the greatest.  However, we are interested in users to test the tools and appreciate any feedback going forward.
-
 # Example tools
+
+In the following, we describe and show examples of some of the currently available tools. MLViz is an experimental project (and still in development - https://github.com/it-innovation/mlviz), designed to showcase the potential in this area. One prime area of focus going forward is to provide interactivity when exploring high-dimensional data, as this kind of data is one where the productivity impact of MLViz will likely be the greatest.  However, we are interested in users to test the tools and appreciate any feedback going forward.
 
 ## Dimensionality reduction
 
@@ -30,3 +30,20 @@ Reducing the dimensionality of the feature space to two dimensions, while preser
 A typical step in all ML workflows is visualisation the histograms of the features to look for ‘stand out’ features and class separability. This is normally done with an array of static figures  (https://machinelearningmastery.com/visualize-machine-learning-data-python-pandas/) but the tool implemented in MLViz allows for a user to rapidly plot a histogram and interactively change the feature plotted; as well as providing tools for zooming and panning the histogram. Below, using the WBC dataset we can quickly evaluate the feature distributions: the instances for each feature and for each target class appear roughly normally distributed. This suggests that a Gaussian mixture model [X2] may perform well on this dataset and it is worth spending time developing and evaluating such a model. Conversely, because the number of samples are small it unlikely a algorithm of greater complexity (such as a neural network) would perform as well.
 
 <img src="mlviz/static/HistView_example.gif" width="600" height="500" />
+
+## Draughtsman Plot 
+
+Draughtsman plots (a.k.a pair plots) are often used in exploratory analysis to inspect the correlations between a large number of features and to check things like class separability. The MLViz implementation allows users to zoom and pan the plots and also select subsets of the training data interactively – the tool then automatically calculates key information on the selected data (e.g. correlation coefficient) and reactively presents this to the user. In the example below (using the WBC dataset) the draughtsmen plot allows us to rapidly detect linearly correlated features (i.e., radius and perimeter – which is of course supported by physical insight), so we can discard one of these features in our analysis. In addition to this, we can visualise the data in three dimensions (by changing the colour of the data sets) which can further help identify useful features. 
+
+<img src="mlviz/static/DraughtPlot_example.gif" width="600" height="500" />
+
+
+## Tool summary
+
+In the previous examples we used some of the tools available in the MLViz library to explore the Wisconsin breast cancer database. The Dimensionality reduction tool allowed us to gain a rapid qualitive evaluation of the data readiness level of the data and demonstrate that the target classes are unlikely to be linearly separable in the high dimensional space. However, the distribution of the target classes clearly indicates we will be able to develop a well performing classifier on this dataset. The feature histogram tool allowed us to quickly evaluate the feature distributions, the appear approximately gaussian and can help motivate the use of certain models. Finally, the Draughtmen plot tool was extremely effective at highlighting correlated features, some of which can be removed, which could help speed up model development. Overall, the tools allowed us to gain a deep understanding of the dataset and in a time much faster than could be achieved with conventional tools.
+
+Going forward, the MlViz project will aim to expand the range of available tools, with the focus on dealing with high dimensional data sets. 
+
+
+[X1] N. D. Lawrence, Data Readiness Levels, arxiv:1705.02245 (2017)
+[X2] Gaussian Mixture Models, scikit-learn User guide, https://scikit-learn.org/stable/modules/mixture.html, accessed July 2019.
