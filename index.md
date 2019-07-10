@@ -29,13 +29,13 @@ Reducing the dimensionality of the feature space to two dimensions, while preser
 
 A typical step in all ML workflows is visualisation the histograms of the features to look for ‘stand out’ features and class separability. This is normally done with an array of static figures  (https://machinelearningmastery.com/visualize-machine-learning-data-python-pandas/) but the tool implemented in MLViz allows for a user to rapidly plot a histogram and interactively change the feature plotted; as well as providing tools for zooming and panning the histogram. Below, using the WBC dataset we can quickly evaluate the feature distributions: the instances for each feature and for each target class appear roughly normally distributed. This suggests that a Gaussian mixture model [X2] may perform well on this dataset and it is worth spending time developing and evaluating such a model. Conversely, because the number of samples are small it unlikely a algorithm of greater complexity (such as a neural network) would perform as well.
 
-<img src="mlviz/static/HistView_example.gif" width="600" height="500" />
+<img src="mlviz/static/HistView_example.gif" width="400" height="300" />
 
 ## Draughtsman Plot 
 
 Draughtsman plots (a.k.a pair plots) are often used in exploratory analysis to inspect the correlations between a large number of features and to check things like class separability. The MLViz implementation allows users to zoom and pan the plots and also select subsets of the training data interactively – the tool then automatically calculates key information on the selected data (e.g. correlation coefficient) and reactively presents this to the user. In the example below (using the WBC dataset) the draughtsmen plot allows us to rapidly detect linearly correlated features (i.e., radius and perimeter – which is of course supported by physical insight), so we can discard one of these features in our analysis. In addition to this, we can visualise the data in three dimensions (by changing the colour of the data sets) which can further help identify useful features. 
 
-<img src="mlviz/static/DraughtPlot_example.gif" width="600" height="500" />
+<img src="mlviz/static/DraughtPlot_example.gif" width="700" height="600" />
 
 
 ## Tool summary
