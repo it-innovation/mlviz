@@ -17,9 +17,16 @@ Several python packages are available for producing interactive visualisations (
 
 In the following, we describe and show examples of some of the currently available tools. MLViz is an experimental project (and still in development - https://github.com/it-innovation/mlviz), designed to showcase the potential in this area. One prime area of focus going forward is to provide interactivity when exploring high-dimensional data, as this kind of data is one where the productivity impact of MLViz will likely be the greatest.  However, we are interested in users to test the tools and appreciate any feedback going forward.
 
+# Example tools
 
 ## Dimensionality reduction
 
 Reducing the dimensionality of the feature space to two dimensions, while preserving as much as possible the structure of the high-dimensional space, is a common process in exploratory data analysis. This dimensionality reduction tool implemented in MLViz allows users to do this rapidly and extract observed clusters for investigation by other tools in the workflow to help identify how the extracted clusters are distributed in the high dimensional feature space. The below example shows how we use the tool to cluster the Wisconsin Breast Cancer Dataset (WBC - http://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29). The tool shows there are no distinct clusters, but the target classes are relatively well separated. This demonstrates that our data has a relatively high DRL and we will likely be able to build a good classifier of the target using this dataset. 
 
 <img src="mlviz/static/HDViz_example.gif" width="600" height="500" />
+
+## Feature histogram
+
+A typical step in all ML workflows is visualisation the histograms of the features to look for ‘stand out’ features and class separability. This is normally done with an array of static figures  (https://machinelearningmastery.com/visualize-machine-learning-data-python-pandas/) but the tool implemented in MLViz allows for a user to rapidly plot a histogram and interactively change the feature plotted; as well as providing tools for zooming and panning the histogram. Below, using the WBC dataset we can quickly evaluate the feature distributions: the instances for each feature and for each target class appear roughly normally distributed. This suggests that a Gaussian mixture model [X2] may perform well on this dataset and it is worth spending time developing and evaluating such a model. Conversely, because the number of samples are small it unlikely a algorithm of greater complexity (such as a neural network) would perform as well.
+
+<img src="mlviz/static/HistView_example.gif" width="600" height="500" />
