@@ -4,6 +4,8 @@ MLViz is a suite of interactive visualisation tools to assist with the explorato
 
 It is based on the [Bokeh](https://bokeh.pydata.org/en/latest/) library and is developed to integrate with Jupyter notebooks so it can be used in existing exploratory analysis workflows.
 
+Consider reading the [blog post](https://it-innovation.github.io/mlviz/)  describing the motivation behind the MLViz library.
+
 Below you will see an example of the Draughtsman plot tool (a.k.a. a pair plot) implemented in MLViz. It demonstrates how interaction can allow a user to rapidly explore a large number of dimensions (by changing the colour of the data points) and perform real-time calculations on selected subsets of the data.
 
 <img src="examples/data/static/DraughtPlot_example.gif" width="800" height="600" />
